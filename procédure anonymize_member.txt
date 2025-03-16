@@ -1,0 +1,28 @@
+DELIMITER $$
+CREATE PROCEDURE anonymize_member(IN p_member_id UUID)
+BEGIN
+    -- Générer un email random et anonyme au lieu de NULL
+    UPDATE members 
+    SET username = CONCAT('anonymized_', SUBSTRING(MD5(RAND()), 1, 8)),
+        email = CONCAT('anonymized_', SUBSTRING(MD5(RAND()), 1, 8), '@anonymized.org')
+    WHERE id = p_member_id;
+    
+    UPDATE member_profiles
+    SET first_name = 'Anonymized',
+        last_name = 'User',
+        birthdate = NULL,
+        tags = NULL,
+        free_comment = NULL
+    WHERE member_id = p_member_id;
+    
+    UPDATE member_contacts
+    SET phone = NULL,
+        address = NULL,
+        postal_code = NULL,
+        city = NULL
+    WHERE member_id = p_member_id;
+    
+    INSERT INTO audit_logs (entity_type, entity_id, action, field_name, old_value, new_value)
+    VALUES ('member', p_member_id, 'anonymize', 'personal_data', 'removed', 'anonymized');
+END$$
+DELIMITER ;

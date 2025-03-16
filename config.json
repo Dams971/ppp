@@ -1,0 +1,16 @@
+{
+    "auto_render": [
+        "creator_area",
+        "join_team",
+        "ambassador_apply",
+        "membership",
+        "blog",
+        "charity",
+        "gallery",
+        "legal",
+
+        "reader",
+        "login",
+        "register"
+    ]
+}
